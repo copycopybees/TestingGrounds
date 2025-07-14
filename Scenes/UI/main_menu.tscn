@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=3 uid="uid://bv4o6bp7amo7"]
+
+[ext_resource type="Script" uid="uid://c3dh7tk4pnhy5" path="res://Scripts/main_menu.gd" id="1_5wsvm"]
+
+[sub_resource type="GDScript" id="GDScript_g0qcy"]
+script/source = "extends Button
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta: float) -> void:
+	pass
+"
+
+[node name="main_menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5wsvm")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 496.0
+offset_top = 160.0
+offset_right = 656.0
+offset_bottom = 220.0
+text = "START"
+script = SubResource("GDScript_g0qcy")
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

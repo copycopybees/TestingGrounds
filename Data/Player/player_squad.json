@@ -1,0 +1,13 @@
+{
+    "unit_faction": "Player",
+    "units": [
+        {
+            "unit_name": "Man 1",
+            "unit_type": "Human"
+        },
+        {
+            "unit_name": "Man 2",
+            "unit_type": "Human"
+        }
+    ]
+}

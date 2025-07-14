@@ -1,0 +1,13 @@
+{
+    "unit_faction": "Test Enemy",
+    "units": [
+        {
+            "unit_name": "Man 3",
+            "unit_type": "Human"
+        },
+        {
+            "unit_name": "Man 4",
+            "unit_type": "Human"
+        }
+    ]
+}

@@ -1,0 +1,91 @@
+[gd_scene load_steps=12 format=3 uid="uid://cqtagtngkgjcn"]
+
+[ext_resource type="PackedScene" uid="uid://sfr23dm0gcdx" path="res://Scenes/man.tscn" id="1_rb73r"]
+[ext_resource type="PackedScene" uid="uid://ddfnpp7nh147o" path="res://Scenes/terrain_map.tscn" id="2_5skkl"]
+[ext_resource type="Script" path="res://Scripts/pivot.gd" id="2_n4x5s"]
+[ext_resource type="Script" path="res://Scripts/camera.gd" id="3_4xgr3"]
+[ext_resource type="Script" path="res://Scripts/input_handler.gd" id="4_qms01"]
+[ext_resource type="MeshLibrary" uid="uid://cb2ndrnsa0m53" path="res://Resources/ml_test_walls.tres" id="5_a0sq8"]
+[ext_resource type="MeshLibrary" uid="uid://b3cv23ik0fvw0" path="res://Resources/ml_test_highlight.tres" id="5_li1ov"]
+[ext_resource type="Script" path="res://Scripts/highlight_map.gd" id="6_w2uit"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_3p1in"]
+
+[sub_resource type="Sky" id="Sky_tmwyp"]
+sky_material = SubResource("ProceduralSkyMaterial_3p1in")
+
+[sub_resource type="Environment" id="Environment_bl5wb"]
+background_mode = 2
+sky = SubResource("Sky_tmwyp")
+
+[node name="Battlescape" type="Node3D"]
+
+[node name="Man" parent="." instance=ExtResource("1_rb73r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 1.005, 0.75)
+
+[node name="Pivot" type="Node3D" parent="."]
+script = ExtResource("2_n4x5s")
+
+[node name="Camera" type="Camera3D" parent="Pivot"]
+transform = Transform3D(0.707107, 0.353553, -0.612373, 0, 0.866026, 0.5, 0.707107, -0.353553, 0.612373, -10, 10, 10)
+projection = 1
+current = true
+size = 10.0
+script = ExtResource("3_4xgr3")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_bl5wb")
+
+[node name="TerrainMap" parent="." instance=ExtResource("2_5skkl")]
+collision_layer = 3
+data = {
+"cells": PackedInt32Array(0, 0, 1441792, 0, 65535, 1441792, 0, 65534, 1441792, 0, 65533, 1441792, 65535, 65533, 1441792, 65534, 65533, 1441792, 65533, 65533, 1441792, 65532, 65533, 1441792, 65532, 65534, 1441792, 65532, 65535, 1441792, 65532, 0, 1441792, 65532, 1, 1441792, 65533, 1, 1441792, 65533, 2, 1441792, 65533, 3, 1441792, 65532, 3, 1441792, 65532, 2, 1441792, 65532, 4, 1441792, 65533, 4, 1441792, 65534, 4, 1441792, 65535, 4, 1441792, 0, 4, 1441792, 1, 4, 1441792, 2, 4, 1441792, 3, 4, 1441792, 3, 3, 1441792, 3, 2, 1441792, 3, 1, 1441792, 3, 0, 1441792, 2, 0, 1441792, 2, 65535, 1441792, 2, 65534, 1441792, 2, 65533, 1441792, 3, 65533, 1441792, 3, 65534, 1441792, 3, 65535, 1441792, 1, 65533, 1441792, 4, 65533, 1441792, 4, 65534, 1441792, 4, 65535, 1441792, 4, 0, 1441792, 4, 1, 1441792, 4, 2, 1441792, 4, 3, 1441792, 4, 4, 1441792, 1, 65534, 1441792, 1, 65535, 1441792, 1, 0, 1441792, 1, 1, 1441792, 1, 2, 1441792, 1, 3, 1441792, 2, 3, 1441792, 2, 2, 1441792, 2, 1, 1441792, 0, 2, 1441792, 0, 3, 1441792, 65535, 2, 1441792, 65535, 3, 1441792, 65534, 3, 1441792, 65534, 2, 1441792, 65534, 1, 1441792, 65535, 1, 1441792, 0, 1, 1441792, 65534, 0, 1441792, 65533, 0, 1441792, 65533, 65535, 1441792, 65534, 65535, 1441792, 65534, 65534, 1441792, 65535, 65535, 1441792, 65535, 0, 1441792, 65535, 65534, 1441792, 65533, 65534, 1441792)
+}
+
+[node name="WallMap" type="GridMap" parent="."]
+mesh_library = ExtResource("5_a0sq8")
+cell_size = Vector3(1.5, 2, 1.5)
+data = {
+"cells": PackedInt32Array(4, 3, 0, 4, 2, 0, 4, 1, 0, 4, 0, 0, 4, 65535, 0, 4, 65534, 0, 3, 4, 1441792, 2, 4, 1441792, 1, 4, 1441792, 0, 4, 1441792, 65535, 4, 1441792, 65534, 4, 1441792, 65533, 4, 1310720, 65532, 3, 131072, 65532, 2, 131072, 65532, 1, 131072, 65532, 0, 131072, 65532, 65535, 131072, 65532, 65534, 131072, 65533, 65533, 1179648, 65534, 65533, 1179648, 65535, 65533, 1179648, 0, 65533, 1179648, 1, 65533, 1179648, 2, 65533, 1179648, 3, 65533, 1179648, 65532, 4, 131073, 4, 4, 1310721, 4, 65533, 524289, 65532, 65533, 1179649)
+}
+metadata/_editor_floor_ = Vector3(0, 0, 0)
+
+[node name="HighlightMap" type="GridMap" parent="."]
+mesh_library = ExtResource("5_li1ov")
+cell_size = Vector3(1.5, 2, 1.5)
+cell_center_y = false
+script = ExtResource("6_w2uit")
+metadata/_editor_floor_ = Vector3(0, 0, 0)
+
+[node name="InputHandler" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("4_qms01")
+
+[node name="HUDContainer" type="SubViewportContainer" parent="."]
+offset_right = 512.0
+offset_bottom = 512.0
+
+[node name="HUD" type="SubViewport" parent="HUDContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="Label" type="Label" parent="HUDContainer/HUD"]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "HELL"
+
+[connection signal="mouse_ray_casted" from="Pivot/Camera" to="HighlightMap" method="_on_camera_mouse_ray_casted"]
+[connection signal="move_camera_d" from="InputHandler" to="Pivot" method="_on_move_camera_d"]
+[connection signal="move_camera_l" from="InputHandler" to="Pivot" method="_on_move_camera_l"]
+[connection signal="move_camera_r" from="InputHandler" to="Pivot" method="_on_move_camera_r"]
+[connection signal="move_camera_u" from="InputHandler" to="Pivot" method="_on_move_camera_u"]
+[connection signal="rotate_camera_l" from="InputHandler" to="Pivot" method="_on_camera_rotate_l"]
+[connection signal="rotate_camera_r" from="InputHandler" to="Pivot" method="_on_camera_rotate_r"]
+[connection signal="tile_selected" from="InputHandler" to="Pivot/Camera" method="_on_input_handler_tile_selected"]
+[connection signal="zoom_in" from="InputHandler" to="Pivot" method="_on_camera_zoom_in"]
+[connection signal="zoom_out" from="InputHandler" to="Pivot" method="_on_camera_zoom_out"]

@@ -1,0 +1,118 @@
+[gd_scene load_steps=14 format=3 uid="uid://cqtagtngkgjcn"]
+
+[ext_resource type="Script" uid="uid://bh6exwp68hvbb" path="res://Scripts/battlescape.gd" id="1_32gdk"]
+[ext_resource type="PackedScene" uid="uid://ddfnpp7nh147o" path="res://Scenes/Prefabs/terrain_map.tscn" id="2_5skkl"]
+[ext_resource type="Script" uid="uid://kj1gxoqo702o" path="res://Scripts/pivot.gd" id="2_n4x5s"]
+[ext_resource type="Script" uid="uid://ng5os1veoi1e" path="res://Scripts/camera.gd" id="3_4xgr3"]
+[ext_resource type="MeshLibrary" uid="uid://cb2ndrnsa0m53" path="res://Resources/Mesh Libraries/ml_test_walls.tres" id="5_a0sq8"]
+[ext_resource type="PackedScene" uid="uid://ld5srd32a4a6" path="res://Scenes/Prefabs/selector_cursor.tscn" id="6_mtdgy"]
+[ext_resource type="PackedScene" uid="uid://ojhgdiur3ggj" path="res://Scenes/Prefabs/path_arrow.tscn" id="8_ouvp0"]
+[ext_resource type="PackedScene" uid="uid://b4vr7ybn6km44" path="res://Scenes/Prefabs/highlight_cursor.tscn" id="8_vkxb1"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_vkxb1"]
+size = Vector2(100, 100)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ouvp0"]
+data = PackedVector3Array(50, 0, 50, -50, 0, 50, 50, 0, -50, -50, 0, 50, -50, 0, -50, 50, 0, -50)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_3p1in"]
+
+[sub_resource type="Sky" id="Sky_tmwyp"]
+sky_material = SubResource("ProceduralSkyMaterial_3p1in")
+
+[sub_resource type="Environment" id="Environment_bl5wb"]
+background_mode = 2
+sky = SubResource("Sky_tmwyp")
+ambient_light_color = Color(1, 1, 1, 1)
+
+[node name="Battlescape" type="Node3D"]
+script = ExtResource("1_32gdk")
+
+[node name="HUDContainer" type="SubViewportContainer" parent="."]
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="HUD" type="SubViewport" parent="HUDContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="Label" type="Label" parent="HUDContainer/HUD"]
+offset_top = 512.0
+offset_right = 128.0
+offset_bottom = 576.0
+text = "HELL"
+
+[node name="EndTurn" type="Button" parent="HUDContainer/HUD"]
+offset_left = 888.0
+offset_top = 536.0
+offset_right = 1136.0
+offset_bottom = 632.0
+
+[node name="Pivot" type="Node3D" parent="."]
+script = ExtResource("2_n4x5s")
+
+[node name="SelectFloor" type="MeshInstance3D" parent="Pivot"]
+visible = false
+mesh = SubResource("PlaneMesh_vkxb1")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Pivot/SelectFloor"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Pivot/SelectFloor/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_ouvp0")
+
+[node name="Camera" type="Camera3D" parent="Pivot"]
+transform = Transform3D(0.707107, 0.353553, -0.612373, 0, 0.866026, 0.5, 0.707107, -0.353553, 0.612373, -10, 10, 10)
+keep_aspect = 0
+projection = 1
+current = true
+size = 20.0
+near = 0.005
+script = ExtResource("3_4xgr3")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_bl5wb")
+
+[node name="TerrainMap" parent="." instance=ExtResource("2_5skkl")]
+cell_center_x = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(1, 65535, 0, 0, 65535, 0, 65535, 65535, 0, 0, 0, 0, 65535, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 65535, 1, 0, 2, 65535, 0, 3, 65535, 0, 4, 65535, 0, 5, 65535, 0, 6, 65535, 0, 6, 0, 0, 6, 1, 0, 5, 1, 0, 4, 1, 0, 3, 1, 0, 2, 1, 0, 2, 0, 0, 3, 0, 0, 4, 0, 0, 5, 0, 0, 6, 2, 0, 5, 2, 0, 4, 2, 0, 3, 2, 0, 2, 2, 0, 1, 2, 0, 0, 2, 0, 65535, 2, 0, 65535, 3, 0, 0, 3, 0, 0, 4, 0, 1, 4, 0, 2, 4, 0, 3, 4, 0, 4, 4, 0, 5, 4, 0, 5, 3, 0, 6, 3, 0, 6, 4, 0, 4, 3, 0, 3, 3, 0, 2, 3, 0, 1, 3, 0, 65535, 4, 0, 65535, 5, 0, 0, 5, 0, 1, 5, 0, 1, 6, 0, 2, 6, 0, 3, 6, 0, 4, 6, 0, 5, 6, 0, 5, 5, 0, 6, 5, 0, 6, 6, 0, 4, 5, 0, 3, 5, 0, 2, 5, 0, 0, 6, 0, 65535, 6, 0)
+}
+
+[node name="WallMap" type="GridMap" parent="."]
+mesh_library = ExtResource("5_a0sq8")
+cell_size = Vector3(1.5, 2, 1.5)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(7, 65535, 1441794, 7, 7, 655362, 65535, 7, 1048578, 0, 7, 1, 1, 7, 1, 4, 7, 655361, 7, 6, 1441793, 7, 2, 1441793, 7, 0, 1441793, 6, 65535, 655361, 5, 65535, 655361, 4, 65535, 655361, 3, 65535, 655361, 2, 65535, 655361, 1, 65535, 655361, 0, 65535, 1, 65535, 1, 1441793, 2, 7, 655361, 3, 7, 655361, 5, 7, 655361, 6, 7, 655361, 65535, 65535, 2, 65535, 0, 1441793, 65535, 2, 1441793, 65535, 3, 1441793, 65535, 4, 1441793, 65535, 5, 1441793, 65535, 6, 1441793, 7, 1, 1441793, 7, 3, 1441793, 7, 4, 1441793, 7, 5, 1441793)
+}
+metadata/_editor_floor_ = Vector3(0, 0, 0)
+
+[node name="SelectorCursor" parent="." instance=ExtResource("6_mtdgy")]
+visible = false
+
+[node name="HighlightCursor" parent="." instance=ExtResource("8_vkxb1")]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.608429, 0.793608, 0, -0.793608, 0.608429, 0, 10.2616, -8.31972)
+
+[node name="UnitContainer" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0, 0.75)
+
+[node name="PathArrow" parent="." instance=ExtResource("8_ouvp0")]
+
+[node name="MCIContainer" type="Node3D" parent="."]
+
+[connection signal="terrain_bounds" from="." to="Pivot" method="_on_battlescape_terrain_bounds"]
+[connection signal="terrain_bounds" from="." to="Pivot/Camera" method="_on_battlescape_terrain_bounds"]
+[connection signal="pressed" from="HUDContainer/HUD/EndTurn" to="." method="_on_end_turn"]
+[connection signal="cell_selected" from="Pivot/Camera" to="." method="_on_cell_selected"]
+[connection signal="highlight_ray_casted" from="Pivot/Camera" to="HighlightCursor" method="_on_camera_highlight_ray_casted"]
+[connection signal="selector_ray_casted" from="Pivot/Camera" to="SelectorCursor" method="_on_camera_mouse_ray_casted"]

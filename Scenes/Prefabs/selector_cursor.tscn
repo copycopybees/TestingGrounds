@@ -1,0 +1,76 @@
+[gd_scene load_steps=7 format=3 uid="uid://ld5srd32a4a6"]
+
+[ext_resource type="Script" uid="uid://cb0tldi4p1jjs" path="res://Scripts/selector_cursor.gd" id="1_hui0c"]
+
+[sub_resource type="Shader" id="Shader_2f0gv"]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, unshaded, depth_test_disabled;
+
+uniform float time_scale = 0.5;
+uniform float density : hint_range(1.0, 32.0, 1.0) = 4.0;
+uniform float gap_duty_cycle : hint_range(0.0, 0.50) = 0.5;
+uniform vec3 color : source_color;
+uniform float margin : hint_range(0.0, 0.50) = 0.1;
+
+vec2 get_rotated_uv(vec2 uv, vec2 uv_tex) {
+    vec2 r_uv = vec2(0.0);
+    //r_uv.x = mix(uv.x, 1.0 - uv.x, step(1.0 / 3.0, uv_tex.x));
+    r_uv.y = 1.0 - uv.y;
+    
+    // Why is the bottom face fucked?
+    if (uv_tex.x > 1.0 / 3.0 && uv_tex.y > 0.5) {
+        r_uv = abs(uv-0.5);
+    }
+    
+    return r_uv;
+}
+
+
+void fragment() {
+    vec2 uv = get_rotated_uv(mod(UV * vec2(3.0, 2.0), 1.0), UV);
+	
+    float top_face = step(0.5, UV.y) * step(1.0 / 3.0, UV.x) * step(UV.x, 2.0/3.0);
+    
+    ALBEDO = (step(mod(max(uv.x,uv.y) * density + (TIME * mix(-1.0,1.0,top_face)) * time_scale, 1.0), gap_duty_cycle - margin) * step(margin, mod(max(uv.x,uv.y) * density + (TIME * mix(-1.0,1.0,top_face)) * time_scale, 1.0))) * color;
+	 
+	ALPHA = step(mod(max(uv.x,uv.y) * density + (TIME * mix(-1.0,1.0,top_face)) * time_scale, 1.0), gap_duty_cycle);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dxfl1"]
+render_priority = -2
+shader = SubResource("Shader_2f0gv")
+shader_parameter/time_scale = 0.5
+shader_parameter/density = 10.0
+shader_parameter/gap_duty_cycle = 0.14
+shader_parameter/color = Color(1, 0, 0, 1)
+shader_parameter/margin = 0.03
+
+[sub_resource type="BoxMesh" id="BoxMesh_wa0ud"]
+material = SubResource("ShaderMaterial_dxfl1")
+flip_faces = true
+size = Vector3(1.5, 2, 1.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2f0gv"]
+render_priority = 3
+shader = SubResource("Shader_2f0gv")
+shader_parameter/time_scale = 0.5
+shader_parameter/density = 10.0
+shader_parameter/gap_duty_cycle = 0.14
+shader_parameter/color = Color(1, 0, 0, 1)
+shader_parameter/margin = 0.03
+
+[sub_resource type="BoxMesh" id="BoxMesh_xc7eh"]
+material = SubResource("ShaderMaterial_2f0gv")
+size = Vector3(1.5, 2, 1.5)
+
+[node name="SelectorCursor" type="Node3D"]
+script = ExtResource("1_hui0c")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("BoxMesh_wa0ud")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("BoxMesh_xc7eh")
+skeleton = NodePath("../MeshInstance3D")

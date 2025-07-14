@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://ddfnpp7nh147o"]
+
+[ext_resource type="MeshLibrary" uid="uid://ce14bjbmwxlnc" path="res://Resources/Mesh Libraries/ml_test_terrain.tres" id="1_mv1m8"]
+
+[node name="GridMap" type="GridMap"]
+mesh_library = ExtResource("1_mv1m8")
+cell_size = Vector3(1.5, 2, 1.5)
+cell_center_y = false
