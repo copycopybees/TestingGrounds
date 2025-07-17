@@ -30,7 +30,7 @@ var movement_cancelled := false
 var present_teams : Array
 var current_team : int
 
-const TRAVEL_TIME = 0.6
+const TRAVEL_TIME = 0.5
 enum WALL_TYPES {PLUS, WALL, CORNER, T, HALFWALL}
 enum WALL_EXTENDS {NONE, UP, RIGHT, DOWN=4, LEFT=8, ALL=15}
 enum DIRECTIONS {NW, N, NE, W, E, SW, S, SE}
