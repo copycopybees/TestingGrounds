@@ -263,22 +263,22 @@ func check_if_connection_blocked(cell:Vector3i, connection:int):
 	var down_cell = get_wall_extends(cell + Vector3i(0,0,1))
 	var down_right_cell = get_wall_extends(cell + Vector3i(1,0,1))
 	match connection:
-		0:
-			return our_cell>0
-		1:
-			return our_cell & WALL_EXTENDS.RIGHT and right_cell & WALL_EXTENDS.LEFT
-		2:
+		DIRECTIONS.NE:
 			return right_cell>0
-		3:
-			return our_cell & WALL_EXTENDS.DOWN and down_cell & WALL_EXTENDS.UP
-		4:
-			return right_cell & WALL_EXTENDS.DOWN and down_right_cell & WALL_EXTENDS.UP
-		5:
-			return down_cell>0
-		6:
-			return down_cell & WALL_EXTENDS.RIGHT and down_right_cell & WALL_EXTENDS.LEFT
-		7:
+		DIRECTIONS.NW:
+			return our_cell>0
+		DIRECTIONS.SE:
 			return down_right_cell>0
+		DIRECTIONS.SW:
+			return down_cell>0
+		DIRECTIONS.N:
+			return our_cell & WALL_EXTENDS.RIGHT and right_cell & WALL_EXTENDS.LEFT
+		DIRECTIONS.E:
+			return right_cell & WALL_EXTENDS.DOWN and down_right_cell & WALL_EXTENDS.UP
+		DIRECTIONS.S:
+			return down_cell & WALL_EXTENDS.RIGHT and down_right_cell & WALL_EXTENDS.LEFT
+		DIRECTIONS.W:
+			return our_cell & WALL_EXTENDS.DOWN and down_cell & WALL_EXTENDS.UP
 	return false
 
 func deselect_unit(unit):
