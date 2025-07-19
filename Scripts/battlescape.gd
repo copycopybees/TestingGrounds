@@ -30,6 +30,7 @@ var movement_cancelled := false
 var present_teams : Array
 var current_team : int
 
+const DIRECTIONS_RADIANS = [-2.35619449615479, -1.57079637050629, -0.78539818525314, 0.0, 0.78539818525314, 1.57079637050629, 2.35619449615479, 3.14159274101257]
 const TRAVEL_TIME = 0.5
 enum WALL_TYPES {PLUS, WALL, CORNER, T, HALFWALL}
 enum WALL_EXTENDS {NONE, UP, RIGHT, DOWN=4, LEFT=8, ALL=15}
@@ -49,11 +50,11 @@ func _ready() -> void:
 	_initialise_units()
 	var bounds : Rect2
 	for i in terrain_cells.size():
-		if terrain_cells[i].x < bounds.position.x:
+		if terrain_cells[i].x <= bounds.position.x:
 			bounds.position.x = terrain_cells[i].x * 1.5
-		elif terrain_cells[i].x > bounds.end.x:
+		elif terrain_cells[i].x >= bounds.end.x:
 			bounds.end.x = (terrain_cells[i].x + 1) * 1.5
-		if terrain_cells[i].z < bounds.position.y:
+		if terrain_cells[i].z <= bounds.position.y:
 			bounds.position.y = terrain_cells[i].z * 1.5
 		elif terrain_cells[i].z > bounds.end.y:
 			bounds.end.y = (terrain_cells[i].z + 1) * 1.5
@@ -68,7 +69,14 @@ func _process(delta: float) -> void:
 			var unit_pos = Vector2(units[selected_unit_index].position.x,units[selected_unit_index].position.z) * 1.5
 			var highlight_pos = Vector2($HighlightCursor.position.x,$HighlightCursor.position.z) - Vector2(0.75,0.75)
 			var angle = unit_pos.angle_to_point(highlight_pos)
-			_turn_unit(delta,angle)
+			var closest_angle = 0.0
+			for i in DIRECTIONS_RADIANS.size():
+				if angle <= -2.74889361858:
+					closest_angle = 3.14159274101257
+					break
+				if abs(angle - DIRECTIONS_RADIANS[i]) <= 0.4799655:
+					closest_angle = DIRECTIONS_RADIANS[i]
+			_turn_unit(delta,closest_angle)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("clear_path"):
