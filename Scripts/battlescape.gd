@@ -7,6 +7,7 @@ extends Node3D
 # 16: 270 degrees
 
 signal terrain_bounds(bounds : Rect2)
+signal unit_transmit(unit : Unit)
 
 var mapgrid_floor: AStar3DChess
 var rng = RandomNumberGenerator.new()
@@ -199,6 +200,7 @@ func _move_unit(delta):
 			path_index += 1
 			unit_to_move.tu -= 5
 			unit_to_move.enu -= 2
+			unit_transmit.emit(unit_to_move)
 			if path_index >= unit_path.size()-1 or movement_cancelled or unit_to_move.tu == 0 or unit_to_move.enu == 0:
 				unit_to_move = null
 				move_unit = false
@@ -280,6 +282,7 @@ func deselect_unit(unit):
 func select_unit(unit):
 	units[unit].graphics_node.select()
 	selected_unit_index = unit
+	unit_transmit.emit(units[unit])
 
 func draw_path_graphics(path : PackedVector3Array):
 	path_multimesh.visible_instance_count = path.size()-1
@@ -296,7 +299,8 @@ func draw_path_graphics(path : PackedVector3Array):
 		
 		var tu = unit_to_move.tu - 5 * (i+1)
 		var enu = unit_to_move.enu - 2 * (i+1)
-		movement_cost_indicator.text = "🕓" + str(tu) + "\n🗲" + str(enu)
+		movement_cost_indicator.get_node('TULabel').text = str(tu)
+		movement_cost_indicator.get_node('ENULabel').text = str(enu)
 		if tu < 0 or enu < 0:
 			arrow_color -= Color(0,1,0)
 			if tu < 0:

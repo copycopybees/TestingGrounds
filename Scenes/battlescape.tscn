@@ -1,9 +1,12 @@
-[gd_scene load_steps=14 format=3 uid="uid://cqtagtngkgjcn"]
+[gd_scene load_steps=17 format=3 uid="uid://cqtagtngkgjcn"]
 
 [ext_resource type="Script" uid="uid://bh6exwp68hvbb" path="res://Scripts/battlescape.gd" id="1_32gdk"]
 [ext_resource type="PackedScene" uid="uid://ddfnpp7nh147o" path="res://Scenes/Prefabs/terrain_map.tscn" id="2_5skkl"]
 [ext_resource type="Script" uid="uid://kj1gxoqo702o" path="res://Scripts/pivot.gd" id="2_n4x5s"]
+[ext_resource type="Script" uid="uid://lqa8lj76q3cj" path="res://Scripts/hud_manager.gd" id="2_ouvp0"]
 [ext_resource type="Script" uid="uid://ng5os1veoi1e" path="res://Scripts/camera.gd" id="3_4xgr3"]
+[ext_resource type="Texture2D" uid="uid://bquvac370pxn6" path="res://cock.svg" id="3_lcqfc"]
+[ext_resource type="Texture2D" uid="uid://bwovm74txl6i5" path="res://light.svg" id="4_i0rd7"]
 [ext_resource type="MeshLibrary" uid="uid://cb2ndrnsa0m53" path="res://Resources/Mesh Libraries/ml_test_walls.tres" id="5_a0sq8"]
 [ext_resource type="PackedScene" uid="uid://ld5srd32a4a6" path="res://Scenes/Prefabs/selector_cursor.tscn" id="6_mtdgy"]
 [ext_resource type="PackedScene" uid="uid://ojhgdiur3ggj" path="res://Scenes/Prefabs/path_arrow.tscn" id="8_ouvp0"]
@@ -37,12 +40,70 @@ transparent_bg = true
 handle_input_locally = false
 size = Vector2i(1152, 648)
 render_target_update_mode = 4
+script = ExtResource("2_ouvp0")
+tu_label_path = NodePath("HBoxContainer/CenterContainer/HBoxContainer/TULabel")
+enu_label_path = NodePath("HBoxContainer/CenterContainer2/HBoxContainer/ENULabel")
+unit_name_label_path = NodePath("UnitName")
 
-[node name="Label" type="Label" parent="HUDContainer/HUD"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HUDContainer/HUD"]
+visible = false
+offset_left = 9.0
+offset_top = 538.0
+offset_right = 49.0
+offset_bottom = 578.0
+
+[node name="CenterContainer" type="CenterContainer" parent="HUDContainer/HUD/HBoxContainer"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="HUDContainer/HUD/HBoxContainer/CenterContainer"]
+custom_minimum_size = Vector2(72, 48)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUDContainer/HUD/HBoxContainer/CenterContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="TextureRect" type="TextureRect" parent="HUDContainer/HUD/HBoxContainer/CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("3_lcqfc")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="TULabel" type="Label" parent="HUDContainer/HUD/HBoxContainer/CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="CenterContainer2" type="CenterContainer" parent="HUDContainer/HUD/HBoxContainer"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="HUDContainer/HUD/HBoxContainer/CenterContainer2"]
+custom_minimum_size = Vector2(72, 48)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUDContainer/HUD/HBoxContainer/CenterContainer2"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="TextureRect" type="TextureRect" parent="HUDContainer/HUD/HBoxContainer/CenterContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(16, 32)
+layout_mode = 2
+texture = ExtResource("4_i0rd7")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="ENULabel" type="Label" parent="HUDContainer/HUD/HBoxContainer/CenterContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+
+[node name="UnitName" type="Label" parent="HUDContainer/HUD"]
+offset_left = 11.0
 offset_top = 512.0
-offset_right = 128.0
-offset_bottom = 576.0
-text = "HELL"
+offset_right = 89.0
+offset_bottom = 535.0
 
 [node name="EndTurn" type="Button" parent="HUDContainer/HUD"]
 offset_left = 888.0
@@ -112,6 +173,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0, 0.75)
 
 [connection signal="terrain_bounds" from="." to="Pivot" method="_on_battlescape_terrain_bounds"]
 [connection signal="terrain_bounds" from="." to="Pivot/Camera" method="_on_battlescape_terrain_bounds"]
+[connection signal="unit_transmit" from="." to="HUDContainer/HUD" method="_on_unit_transmitted"]
 [connection signal="pressed" from="HUDContainer/HUD/EndTurn" to="." method="_on_end_turn"]
 [connection signal="cell_selected" from="Pivot/Camera" to="." method="_on_cell_selected"]
 [connection signal="highlight_ray_casted" from="Pivot/Camera" to="HighlightCursor" method="_on_camera_highlight_ray_casted"]

@@ -1,12 +1,41 @@
-[gd_scene format=3 uid="uid://dpusdmjn86gk4"]
+[gd_scene load_steps=3 format=3 uid="uid://dpusdmjn86gk4"]
 
-[node name="Label3D" type="Label3D"]
+[ext_resource type="Texture2D" uid="uid://bquvac370pxn6" path="res://cock.svg" id="1_hh7rg"]
+[ext_resource type="Texture2D" uid="uid://bwovm74txl6i5" path="res://light.svg" id="2_nku7q"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="TULabel" type="Label3D" parent="."]
+offset = Vector2(16, 10)
 billboard = 1
 no_depth_test = true
 fixed_size = true
 render_priority = 10
 outline_render_priority = 9
-text = "🕓
-🗲"
-font_size = 20
+font_size = 16
 outline_size = 4
+
+[node name="TUIcon" type="Sprite3D" parent="."]
+transform = Transform3D(0.15, 0, 0, 0, 0.15, 0, 0, 0, 0.15, 0, 0, 0)
+offset = Vector2(-32, 32)
+billboard = 1
+fixed_size = true
+texture = ExtResource("1_hh7rg")
+
+[node name="ENULabel" type="Label3D" parent="."]
+offset = Vector2(16, -16)
+billboard = 1
+no_depth_test = true
+fixed_size = true
+render_priority = 10
+outline_render_priority = 9
+font_size = 16
+outline_size = 4
+
+[node name="ENUIcon" type="Sprite3D" parent="."]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
+offset = Vector2(-20, -32)
+billboard = 1
+no_depth_test = true
+fixed_size = true
+texture = ExtResource("2_nku7q")
