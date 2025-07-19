@@ -17,7 +17,6 @@ var mci_prefab := preload("res://Scenes/Prefabs/movement_cost_indicator.tscn")
 var player_units := preload("res://Data/Player/player_squad.json").data
 var enemy_units := preload("res://Data/Faction Prefabs/test_faction_squad.json").data
 
-
 var units : Array[Unit] = []
 var selected_unit_index := -1
 var unit_selected := false
@@ -60,14 +59,23 @@ func _ready() -> void:
 			bounds.end.y = (terrain_cells[i].z + 1) * 1.5
 	terrain_bounds.emit(bounds)
 	_gather_present_teams()
-	for unit in units:
-		print(unit.unit_team)
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if current_team == 0:
 		_move_unit(delta)
+		if move_unit == false and Input.is_action_just_pressed("turn_unit"):
+			var unit_pos = Vector2(units[selected_unit_index].position.x,units[selected_unit_index].position.z) * 1.5
+			var highlight_pos = Vector2($HighlightCursor.position.x,$HighlightCursor.position.z) - Vector2(0.75,0.75)
+			var angle = unit_pos.angle_to_point(highlight_pos)
+			_turn_unit(delta,angle)
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("clear_path"):
+		path_multimesh.visible_instance_count = 0
+		for i in $MCIContainer.get_children().size():
+			$MCIContainer.get_children()[i].queue_free()
+		last_clicked_cell = Vector3i(1000,0,1000)
 
 func _generate_navgrid():
 	mapgrid_floor = AStar3DChess.new()
@@ -87,7 +95,6 @@ func _generate_navgrid():
 			if cell_id != -1:
 				if not check_if_connection_blocked(pos, j):
 					mapgrid_floor.connect_points(i,cell_id)
-
 
 func _on_cell_selected(cell: Vector3i) -> void:
 	if move_unit:
@@ -164,9 +171,6 @@ func _set_unit_destination(unit_index : int, target : Vector3i):
 				$MCIContainer.get_children()[i].queue_free()
 			draw_path_graphics(path)
 
-
-			
-
 func _move_unit(delta):
 	if move_unit:
 		if unit_to_move.tu == 0 or unit_to_move.enu == 0:
@@ -211,6 +215,9 @@ func _move_unit(delta):
 				for i in $MCIContainer.get_children().size():
 					$MCIContainer.get_children()[i].queue_free()
 				last_clicked_cell = Vector3i(100,100,100)
+
+func _turn_unit(delta, angle):
+	units[selected_unit_index].graphics_node.transform.basis = transform.basis.rotated(Vector3.UP, -angle)
 
 func get_wall_extends(cell):
 	var wall = wall_map.get_cell_item(cell)
@@ -309,7 +316,6 @@ func draw_path_graphics(path : PackedVector3Array):
 				arrow_color += Color(0,0,1)
 		path_multimesh.set_instance_color(i, arrow_color)
 		$MCIContainer.add_child(movement_cost_indicator)
-
 
 func _on_end_turn() -> void:
 	if not move_unit:
