@@ -1,6 +1,7 @@
-[gd_scene load_steps=17 format=3 uid="uid://cqtagtngkgjcn"]
+[gd_scene load_steps=27 format=3 uid="uid://cqtagtngkgjcn"]
 
 [ext_resource type="Script" uid="uid://bh6exwp68hvbb" path="res://Scripts/battlescape.gd" id="1_32gdk"]
+[ext_resource type="Script" uid="uid://yj2ueuihl0so" path="res://Scripts/world_viewport.gd" id="1_i0rd7"]
 [ext_resource type="PackedScene" uid="uid://ddfnpp7nh147o" path="res://Scenes/Prefabs/terrain_map.tscn" id="2_5skkl"]
 [ext_resource type="Script" uid="uid://kj1gxoqo702o" path="res://Scripts/pivot.gd" id="2_n4x5s"]
 [ext_resource type="Script" uid="uid://lqa8lj76q3cj" path="res://Scripts/hud_manager.gd" id="2_ouvp0"]
@@ -11,6 +12,29 @@
 [ext_resource type="PackedScene" uid="uid://ld5srd32a4a6" path="res://Scenes/Prefabs/selector_cursor.tscn" id="6_mtdgy"]
 [ext_resource type="PackedScene" uid="uid://ojhgdiur3ggj" path="res://Scenes/Prefabs/path_arrow.tscn" id="8_ouvp0"]
 [ext_resource type="PackedScene" uid="uid://b4vr7ybn6km44" path="res://Scenes/Prefabs/highlight_cursor.tscn" id="8_vkxb1"]
+[ext_resource type="PackedScene" uid="uid://bdma3skw16eqw" path="res://Scenes/Prefabs/accuracy_cylinder.tscn" id="10_6pevj"]
+[ext_resource type="Texture2D" uid="uid://box5j32sp6xp3" path="res://Textures/dialoff.svg" id="13_alvra"]
+[ext_resource type="Texture2D" uid="uid://2tmdsfeiloa2" path="res://Textures/dialon.svg" id="14_qiwui"]
+[ext_resource type="Script" uid="uid://b7hpjyai5c52u" path="res://Scripts/kill_mode_indicator.gd" id="15_qiwui"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovb7r"]
+bg_color = Color(0.147672, 0.147672, 0.147672, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 0.257717, 0.55948, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i0rd7"]
+bg_color = Color(0.133196, 0.133196, 0.133196, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lcqfc"]
+bg_color = Color(0.237539, 0.237539, 0.237539, 1)
+
+[sub_resource type="Theme" id="Theme_i0rd7"]
+Button/styles/normal = SubResource("StyleBoxFlat_ovb7r")
+Panel/styles/panel = SubResource("StyleBoxFlat_i0rd7")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_lcqfc")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_vkxb1"]
 size = Vector2(100, 100)
@@ -28,105 +52,46 @@ background_mode = 2
 sky = SubResource("Sky_tmwyp")
 ambient_light_color = Color(1, 1, 1, 1)
 
-[node name="Battlescape" type="Node3D"]
-script = ExtResource("1_32gdk")
+[sub_resource type="FontVariation" id="FontVariation_lcqfc"]
 
-[node name="HUDContainer" type="SubViewportContainer" parent="."]
-offset_right = 1152.0
-offset_bottom = 648.0
+[node name="Root" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1440.0
+offset_bottom = 1080.0
+theme = SubResource("Theme_i0rd7")
 
-[node name="HUD" type="SubViewport" parent="HUDContainer"]
+[node name="WorldContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+offset_right = 1440.0
+offset_bottom = 1080.0
+script = ExtResource("1_i0rd7")
+
+[node name="WorldViewport" type="SubViewport" parent="WorldContainer"]
 transparent_bg = true
 handle_input_locally = false
-size = Vector2i(1152, 648)
+size = Vector2i(1440, 1080)
 render_target_update_mode = 4
-script = ExtResource("2_ouvp0")
-tu_label_path = NodePath("HBoxContainer/CenterContainer/HBoxContainer/TULabel")
-enu_label_path = NodePath("HBoxContainer/CenterContainer2/HBoxContainer/ENULabel")
-unit_name_label_path = NodePath("UnitName")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HUDContainer/HUD"]
-visible = false
-offset_left = 9.0
-offset_top = 538.0
-offset_right = 49.0
-offset_bottom = 578.0
+[node name="Battlescape" type="Node3D" parent="WorldContainer/WorldViewport"]
+script = ExtResource("1_32gdk")
 
-[node name="CenterContainer" type="CenterContainer" parent="HUDContainer/HUD/HBoxContainer"]
-custom_minimum_size = Vector2(64, 0)
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="HUDContainer/HUD/HBoxContainer/CenterContainer"]
-custom_minimum_size = Vector2(72, 48)
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HUDContainer/HUD/HBoxContainer/CenterContainer"]
-layout_mode = 2
-size_flags_vertical = 4
-
-[node name="TextureRect" type="TextureRect" parent="HUDContainer/HUD/HBoxContainer/CenterContainer/HBoxContainer"]
-custom_minimum_size = Vector2(24, 24)
-layout_mode = 2
-texture = ExtResource("3_lcqfc")
-expand_mode = 1
-stretch_mode = 4
-
-[node name="TULabel" type="Label" parent="HUDContainer/HUD/HBoxContainer/CenterContainer/HBoxContainer"]
-custom_minimum_size = Vector2(32, 0)
-layout_mode = 2
-horizontal_alignment = 1
-
-[node name="CenterContainer2" type="CenterContainer" parent="HUDContainer/HUD/HBoxContainer"]
-custom_minimum_size = Vector2(64, 0)
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="HUDContainer/HUD/HBoxContainer/CenterContainer2"]
-custom_minimum_size = Vector2(72, 48)
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HUDContainer/HUD/HBoxContainer/CenterContainer2"]
-layout_mode = 2
-size_flags_vertical = 4
-
-[node name="TextureRect" type="TextureRect" parent="HUDContainer/HUD/HBoxContainer/CenterContainer2/HBoxContainer"]
-custom_minimum_size = Vector2(16, 32)
-layout_mode = 2
-texture = ExtResource("4_i0rd7")
-expand_mode = 1
-stretch_mode = 4
-
-[node name="ENULabel" type="Label" parent="HUDContainer/HUD/HBoxContainer/CenterContainer2/HBoxContainer"]
-custom_minimum_size = Vector2(32, 0)
-layout_mode = 2
-
-[node name="UnitName" type="Label" parent="HUDContainer/HUD"]
-offset_left = 11.0
-offset_top = 512.0
-offset_right = 89.0
-offset_bottom = 535.0
-
-[node name="EndTurn" type="Button" parent="HUDContainer/HUD"]
-offset_left = 888.0
-offset_top = 536.0
-offset_right = 1136.0
-offset_bottom = 632.0
-
-[node name="Pivot" type="Node3D" parent="."]
+[node name="Pivot" type="Node3D" parent="WorldContainer/WorldViewport/Battlescape"]
 script = ExtResource("2_n4x5s")
 
-[node name="SelectFloor" type="MeshInstance3D" parent="Pivot"]
+[node name="SelectFloor" type="MeshInstance3D" parent="WorldContainer/WorldViewport/Battlescape/Pivot"]
 visible = false
 mesh = SubResource("PlaneMesh_vkxb1")
 skeleton = NodePath("../..")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Pivot/SelectFloor"]
+[node name="StaticBody3D" type="StaticBody3D" parent="WorldContainer/WorldViewport/Battlescape/Pivot/SelectFloor"]
 collision_layer = 2
 collision_mask = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Pivot/SelectFloor/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldContainer/WorldViewport/Battlescape/Pivot/SelectFloor/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_ouvp0")
 
-[node name="Camera" type="Camera3D" parent="Pivot"]
+[node name="Camera" type="Camera3D" parent="WorldContainer/WorldViewport/Battlescape/Pivot"]
 transform = Transform3D(0.707107, 0.353553, -0.612373, 0, 0.866026, 0.5, 0.707107, -0.353553, 0.612373, -10, 10, 10)
 keep_aspect = 0
 projection = 1
@@ -135,17 +100,17 @@ size = 20.0
 near = 0.005
 script = ExtResource("3_4xgr3")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="WorldContainer/WorldViewport/Battlescape"]
 environment = SubResource("Environment_bl5wb")
 
-[node name="TerrainMap" parent="." instance=ExtResource("2_5skkl")]
+[node name="TerrainMap" parent="WorldContainer/WorldViewport/Battlescape" instance=ExtResource("2_5skkl")]
 cell_center_x = false
 cell_center_z = false
 data = {
 "cells": PackedInt32Array(1, 65535, 0, 0, 65535, 0, 65535, 65535, 0, 0, 0, 0, 65535, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 65535, 1, 0, 2, 65535, 0, 3, 65535, 0, 4, 65535, 0, 5, 65535, 0, 6, 65535, 0, 6, 0, 0, 6, 1, 0, 5, 1, 0, 4, 1, 0, 3, 1, 0, 2, 1, 0, 2, 0, 0, 3, 0, 0, 4, 0, 0, 5, 0, 0, 6, 2, 0, 5, 2, 0, 4, 2, 0, 3, 2, 0, 2, 2, 0, 1, 2, 0, 0, 2, 0, 65535, 2, 0, 65535, 3, 0, 0, 3, 0, 0, 4, 0, 1, 4, 0, 2, 4, 0, 3, 4, 0, 4, 4, 0, 5, 4, 0, 5, 3, 0, 6, 3, 0, 6, 4, 0, 4, 3, 0, 3, 3, 0, 2, 3, 0, 1, 3, 0, 65535, 4, 0, 65535, 5, 0, 0, 5, 0, 1, 5, 0, 1, 6, 0, 2, 6, 0, 3, 6, 0, 4, 6, 0, 5, 6, 0, 5, 5, 0, 6, 5, 0, 6, 6, 0, 4, 5, 0, 3, 5, 0, 2, 5, 0, 0, 6, 0, 65535, 6, 0, 65535, 7, 0, 65535, 8, 0, 65535, 9, 0, 65535, 10, 0, 65535, 11, 0, 65535, 12, 0, 65535, 13, 0, 65535, 14, 0, 65535, 15, 0, 65535, 16, 0, 0, 7, 0, 0, 8, 0, 0, 9, 0, 0, 10, 0, 0, 11, 0, 0, 12, 0, 0, 13, 0, 0, 14, 0, 0, 15, 0, 0, 16, 0, 1, 7, 0, 1, 8, 0, 1, 9, 0, 1, 10, 0, 1, 11, 0, 1, 12, 0, 1, 13, 0, 1, 14, 0, 1, 15, 0, 1, 16, 0, 2, 7, 0, 2, 8, 0, 2, 9, 0, 2, 10, 0, 2, 11, 0, 2, 12, 0, 2, 13, 0, 2, 14, 0, 2, 15, 0, 2, 16, 0, 3, 7, 0, 3, 8, 0, 3, 9, 0, 3, 10, 0, 3, 11, 0, 3, 12, 0, 3, 13, 0, 3, 14, 0, 3, 15, 0, 3, 16, 0, 4, 7, 0, 4, 8, 0, 4, 9, 0, 4, 10, 0, 4, 11, 0, 4, 12, 0, 4, 13, 0, 4, 14, 0, 4, 15, 0, 4, 16, 0, 5, 7, 0, 5, 8, 0, 5, 9, 0, 5, 10, 0, 5, 11, 0, 5, 12, 0, 5, 13, 0, 5, 14, 0, 5, 15, 0, 5, 16, 0, 6, 7, 0, 6, 8, 0, 6, 9, 0, 6, 10, 0, 6, 11, 0, 6, 12, 0, 6, 13, 0, 6, 14, 0, 6, 15, 0, 6, 16, 0, 7, 65535, 0, 7, 0, 0, 7, 1, 0, 7, 2, 0, 7, 3, 0, 7, 4, 0, 7, 5, 0, 7, 6, 0, 7, 7, 0, 7, 8, 0, 7, 9, 0, 7, 10, 0, 7, 11, 0, 7, 12, 0, 7, 13, 0, 7, 14, 0, 7, 15, 0, 7, 16, 0, 8, 65535, 0, 8, 0, 0, 8, 1, 0, 8, 2, 0, 8, 3, 0, 8, 4, 0, 8, 5, 0, 8, 6, 0, 8, 7, 0, 8, 8, 0, 8, 9, 0, 8, 10, 0, 8, 11, 0, 8, 12, 0, 8, 13, 0, 8, 14, 0, 8, 15, 0, 8, 16, 0, 9, 65535, 0, 9, 0, 0, 9, 1, 0, 9, 2, 0, 9, 3, 0, 9, 4, 0, 9, 5, 0, 9, 6, 0, 9, 7, 0, 9, 8, 0, 9, 9, 0, 9, 10, 0, 9, 11, 0, 9, 12, 0, 9, 13, 0, 9, 14, 0, 9, 15, 0, 9, 16, 0, 10, 65535, 0, 10, 0, 0, 10, 1, 0, 10, 2, 0, 10, 3, 0, 10, 4, 0, 10, 5, 0, 10, 6, 0, 10, 7, 0, 10, 8, 0, 10, 9, 0, 10, 10, 0, 10, 11, 0, 10, 12, 0, 10, 13, 0, 10, 14, 0, 10, 15, 0, 10, 16, 0, 11, 65535, 0, 11, 0, 0, 11, 1, 0, 11, 2, 0, 11, 3, 0, 11, 4, 0, 11, 5, 0, 11, 6, 0, 11, 7, 0, 11, 8, 0, 11, 9, 0, 11, 10, 0, 11, 11, 0, 11, 12, 0, 11, 13, 0, 11, 14, 0, 11, 15, 0, 11, 16, 0, 12, 65535, 0, 12, 0, 0, 12, 1, 0, 12, 2, 0, 12, 3, 0, 12, 4, 0, 12, 5, 0, 12, 6, 0, 12, 7, 0, 12, 8, 0, 12, 9, 0, 12, 10, 0, 12, 11, 0, 12, 12, 0, 12, 13, 0, 12, 14, 0, 12, 15, 0, 12, 16, 0, 13, 65535, 0, 13, 0, 0, 13, 1, 0, 13, 2, 0, 13, 3, 0, 13, 4, 0, 13, 5, 0, 13, 6, 0, 13, 7, 0, 13, 8, 0, 13, 9, 0, 13, 10, 0, 13, 11, 0, 13, 12, 0, 13, 13, 0, 13, 14, 0, 13, 15, 0, 13, 16, 0, 14, 65535, 0, 14, 0, 0, 14, 1, 0, 14, 2, 0, 14, 3, 0, 14, 4, 0, 14, 5, 0, 14, 6, 0, 14, 7, 0, 14, 8, 0, 14, 9, 0, 14, 10, 0, 14, 11, 0, 14, 12, 0, 14, 13, 0, 14, 14, 0, 14, 15, 0, 14, 16, 0, 15, 65535, 0, 15, 0, 0, 15, 1, 0, 15, 2, 0, 15, 3, 0, 15, 4, 0, 15, 5, 0, 15, 6, 0, 15, 7, 0, 15, 8, 0, 15, 9, 0, 15, 10, 0, 15, 11, 0, 15, 12, 0, 15, 13, 0, 15, 14, 0, 15, 15, 0, 15, 16, 0, 16, 65535, 0, 16, 0, 0, 16, 1, 0, 16, 2, 0, 16, 3, 0, 16, 4, 0, 16, 5, 0, 16, 6, 0, 16, 7, 0, 16, 8, 0, 16, 9, 0, 16, 10, 0, 16, 11, 0, 16, 12, 0, 16, 13, 0, 16, 14, 0, 16, 15, 0, 16, 16, 0)
 }
 
-[node name="WallMap" type="GridMap" parent="."]
+[node name="WallMap" type="GridMap" parent="WorldContainer/WorldViewport/Battlescape"]
 mesh_library = ExtResource("5_a0sq8")
 cell_size = Vector3(1.5, 2, 1.5)
 cell_center_x = false
@@ -156,25 +121,222 @@ data = {
 }
 metadata/_editor_floor_ = Vector3(0, 0, 0)
 
-[node name="SelectorCursor" parent="." instance=ExtResource("6_mtdgy")]
+[node name="SelectorCursor" parent="WorldContainer/WorldViewport/Battlescape" instance=ExtResource("6_mtdgy")]
 visible = false
 
-[node name="HighlightCursor" parent="." instance=ExtResource("8_vkxb1")]
+[node name="HighlightCursor" parent="WorldContainer/WorldViewport/Battlescape" instance=ExtResource("8_vkxb1")]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldContainer/WorldViewport/Battlescape"]
 transform = Transform3D(1, 0, 0, 0, 0.608429, 0.793608, 0, -0.793608, 0.608429, 0, 10.2616, -8.31972)
 
-[node name="UnitContainer" type="Node3D" parent="."]
+[node name="UnitContainer" type="Node3D" parent="WorldContainer/WorldViewport/Battlescape"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0, 0.75)
 
-[node name="PathArrow" parent="." instance=ExtResource("8_ouvp0")]
+[node name="PathArrow" parent="WorldContainer/WorldViewport/Battlescape" instance=ExtResource("8_ouvp0")]
 
-[node name="MCIContainer" type="Node3D" parent="."]
+[node name="MCIContainer" type="Node3D" parent="WorldContainer/WorldViewport/Battlescape"]
 
-[connection signal="terrain_bounds" from="." to="Pivot" method="_on_battlescape_terrain_bounds"]
-[connection signal="terrain_bounds" from="." to="Pivot/Camera" method="_on_battlescape_terrain_bounds"]
-[connection signal="unit_transmit" from="." to="HUDContainer/HUD" method="_on_unit_transmitted"]
-[connection signal="pressed" from="HUDContainer/HUD/EndTurn" to="." method="_on_end_turn"]
-[connection signal="cell_selected" from="Pivot/Camera" to="." method="_on_cell_selected"]
-[connection signal="highlight_ray_casted" from="Pivot/Camera" to="HighlightCursor" method="_on_camera_highlight_ray_casted"]
-[connection signal="selector_ray_casted" from="Pivot/Camera" to="SelectorCursor" method="_on_camera_mouse_ray_casted"]
+[node name="RayCast3D" type="RayCast3D" parent="WorldContainer/WorldViewport/Battlescape"]
+target_position = Vector3(0, 0, 0)
+debug_shape_custom_color = Color(1, 0, 0, 1)
+debug_shape_thickness = 5
+
+[node name="AccuracyCone" parent="WorldContainer/WorldViewport/Battlescape" instance=ExtResource("10_6pevj")]
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -720.0
+offset_top = -128.0
+offset_right = 720.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("2_ouvp0")
+tu_label_path = NodePath("HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer/HBoxContainer/TULabel")
+enu_label_path = NodePath("HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer2/HBoxContainer/ENULabel")
+unit_name_label_path = NodePath("HBoxContainer/UnitInfoBox/VBoxContainer/UnitName")
+movement_unit_container_path = NodePath("HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="UnitInfoBox" type="CenterContainer" parent="PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/UnitInfoBox"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="UnitName" type="Label" parent="PanelContainer/HBoxContainer/UnitInfoBox/VBoxContainer"]
+layout_mode = 2
+
+[node name="MovementUnitContainer" type="HBoxContainer" parent="PanelContainer/HBoxContainer/UnitInfoBox/VBoxContainer"]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="PanelContainer/HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="PanelContainer/HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer"]
+custom_minimum_size = Vector2(72, 48)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("3_lcqfc")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="TULabel" type="Label" parent="PanelContainer/HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="CenterContainer2" type="CenterContainer" parent="PanelContainer/HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="PanelContainer/HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer2"]
+custom_minimum_size = Vector2(72, 48)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer2"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(16, 32)
+layout_mode = 2
+texture = ExtResource("4_i0rd7")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="ENULabel" type="Label" parent="PanelContainer/HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+
+[node name="VSeparator2" type="VSeparator" parent="PanelContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="ActionButtons" type="VBoxContainer" parent="PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TopButtons" type="HBoxContainer" parent="PanelContainer/HBoxContainer/ActionButtons"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Kill" type="Button" parent="PanelContainer/HBoxContainer/ActionButtons/TopButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "KILL
+"
+
+[node name="Move" type="Button" parent="PanelContainer/HBoxContainer/ActionButtons/TopButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "MOVE"
+
+[node name="Button3" type="Button" parent="PanelContainer/HBoxContainer/ActionButtons/TopButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "KILL HARDEST"
+
+[node name="Button4" type="Button" parent="PanelContainer/HBoxContainer/ActionButtons/TopButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "KILL HARDESTER"
+
+[node name="HSeparator2" type="HSeparator" parent="PanelContainer/HBoxContainer/ActionButtons"]
+layout_mode = 2
+
+[node name="BottomButtons" type="HBoxContainer" parent="PanelContainer/HBoxContainer/ActionButtons"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Button" type="Button" parent="PanelContainer/HBoxContainer/ActionButtons/BottomButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "KILL HARDESTEST"
+
+[node name="Button2" type="Button" parent="PanelContainer/HBoxContainer/ActionButtons/BottomButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "KILL HARDESTESTEST"
+
+[node name="Button3" type="Button" parent="PanelContainer/HBoxContainer/ActionButtons/BottomButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SNOWGRAVE"
+
+[node name="Button4" type="Button" parent="PanelContainer/HBoxContainer/ActionButtons/BottomButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SECX'"
+
+[node name="VSeparator3" type="VSeparator" parent="PanelContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="EndTurn" type="Button" parent="PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/HBoxContainer/EndTurn"]
+custom_minimum_size = Vector2(256, 128)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 1
+theme_override_fonts/normal_font = SubResource("FontVariation_lcqfc")
+theme_override_font_sizes/normal_font_size = 41
+bbcode_enabled = true
+text = "[wave amp=50.0 freq=10.0 connected=1]END TURN[/wave]"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VSeparator4" type="VSeparator" parent="PanelContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.0277778
+anchor_bottom = 0.037037
+
+[node name="KillModeIndicator" type="TextureProgressBar" parent="HBoxContainer"]
+layout_mode = 2
+max_value = 1.0
+texture_under = ExtResource("13_alvra")
+texture_progress = ExtResource("14_qiwui")
+script = ExtResource("15_qiwui")
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "KILL MODE"
+
+[connection signal="kill_mode_update" from="WorldContainer/WorldViewport/Battlescape" to="HBoxContainer/KillModeIndicator" method="_on_battlescape_kill_mode_update"]
+[connection signal="terrain_bounds" from="WorldContainer/WorldViewport/Battlescape" to="WorldContainer/WorldViewport/Battlescape/Pivot" method="_on_battlescape_terrain_bounds"]
+[connection signal="terrain_bounds" from="WorldContainer/WorldViewport/Battlescape" to="WorldContainer/WorldViewport/Battlescape/Pivot/Camera" method="_on_battlescape_terrain_bounds"]
+[connection signal="unit_transmit" from="WorldContainer/WorldViewport/Battlescape" to="WorldContainer/WorldViewport" method="_on_unit_transmitted"]
+[connection signal="cell_selected" from="WorldContainer/WorldViewport/Battlescape/Pivot/Camera" to="WorldContainer/WorldViewport/Battlescape" method="_on_cell_selected"]
+[connection signal="highlight_ray_casted" from="WorldContainer/WorldViewport/Battlescape/Pivot/Camera" to="WorldContainer/WorldViewport/Battlescape/HighlightCursor" method="_on_camera_highlight_ray_casted"]
+[connection signal="selector_ray_casted" from="WorldContainer/WorldViewport/Battlescape/Pivot/Camera" to="WorldContainer/WorldViewport/Battlescape/SelectorCursor" method="_on_camera_mouse_ray_casted"]
+[connection signal="pressed" from="PanelContainer/HBoxContainer/ActionButtons/TopButtons/Kill" to="WorldContainer/WorldViewport/Battlescape" method="_on_kill_pressed"]
+[connection signal="pressed" from="PanelContainer/HBoxContainer/ActionButtons/TopButtons/Move" to="WorldContainer/WorldViewport/Battlescape" method="_on_move_pressed"]
+[connection signal="pressed" from="PanelContainer/HBoxContainer/EndTurn" to="WorldContainer/WorldViewport/Battlescape" method="_on_end_turn"]

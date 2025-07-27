@@ -1,7 +1,9 @@
-[gd_scene load_steps=9 format=4 uid="uid://sfr23dm0gcdx"]
+[gd_scene load_steps=23 format=4 uid="uid://46ubvjwt76tb"]
 
-[ext_resource type="Script" uid="uid://daewkc50n511x" path="res://Scripts/man_graphic.gd" id="1_fnvy5"]
-[ext_resource type="Material" uid="uid://cfhy4i35whkjj" path="res://Resources/Materials/outline.tres" id="2_oh38m"]
+[ext_resource type="Script" uid="uid://daewkc50n511x" path="res://Scripts/man_graphic.gd" id="1_n031l"]
+[ext_resource type="Material" uid="uid://cfhy4i35whkjj" path="res://Resources/Materials/outline.tres" id="2_i7yaj"]
+[ext_resource type="Texture2D" uid="uid://b2cfmd33kmgu4" path="res://garbage/Smoke30Frames_0.png" id="3_snf08"]
+[ext_resource type="Texture2D" uid="uid://63kaq3uxj0n6" path="res://garbage/fire4_64_0.png" id="4_v0p8p"]
 
 [sub_resource type="Shader" id="Shader_fnvy5"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.4.1.stable's StandardMaterial3D.
@@ -297,9 +299,85 @@ bind/55/pose = Transform3D(-1, 1.90736e-06, -5.21371e-08, 2.70629e-06, -3.14592e
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gtmfu"]
 render_priority = -1
 
+[sub_resource type="Curve" id="Curve_oh38m"]
+_data = [Vector2(0, 0.160189), 0.0, 0.0, 0, 0, Vector2(0.698113, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_vnon2"]
+curve = SubResource("Curve_oh38m")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_fnvy5"]
+angle_min = 1.07288e-05
+angle_max = 360.0
+direction = Vector3(0, 0, 1)
+spread = 4.8
+initial_velocity_min = 10.0
+initial_velocity_max = 20.0
+scale_min = 1.5
+scale_max = 3.0
+scale_curve = SubResource("CurveTexture_vnon2")
+anim_speed_min = 16.0
+anim_speed_max = 16.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vnon2"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.537011, 0.537011, 0.537011, 1)
+albedo_texture = ExtResource("3_snf08")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 6
+particles_anim_v_frames = 5
+particles_anim_loop = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_ls18u"]
+material = SubResource("StandardMaterial3D_vnon2")
+
+[sub_resource type="Curve" id="Curve_ls18u"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.535714), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_htub1"]
+curve = SubResource("Curve_ls18u")
+
+[sub_resource type="Curve" id="Curve_vnon2"]
+_data = [Vector2(0, 0.160189), 0.0, 0.0, 0, 0, Vector2(0.698113, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ls18u"]
+curve = SubResource("Curve_vnon2")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_htub1"]
+angle_min = -90.0
+angle_max = -90.0
+angle_curve = SubResource("CurveTexture_htub1")
+direction = Vector3(0, 0, 1)
+spread = 4.8
+initial_velocity_min = 10.0
+initial_velocity_max = 20.0
+scale_max = 2.0
+scale_curve = SubResource("CurveTexture_ls18u")
+anim_speed_min = 16.0
+anim_speed_max = 16.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f645d"]
+render_priority = 1
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_texture = ExtResource("4_v0p8p")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 10
+particles_anim_v_frames = 6
+particles_anim_loop = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_ca2si"]
+material = SubResource("StandardMaterial3D_f645d")
+
 [node name="man_container" type="Node3D"]
-script = ExtResource("1_fnvy5")
-outline_material = ExtResource("2_oh38m")
+script = ExtResource("1_n031l")
+outline_material = ExtResource("2_i7yaj")
 
 [node name="metarig" type="Node3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
@@ -705,3 +783,15 @@ ignore_occlusion_culling = true
 mesh = SubResource("ArrayMesh_u603p")
 skin = SubResource("Skin_8wosu")
 surface_material_override/0 = SubResource("StandardMaterial3D_gtmfu")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="metarig"]
+transform = Transform3D(0.825488, 0.56442, -7.62816e-09, -0.56442, 0.825488, -2.46716e-08, -7.62816e-09, 2.46716e-08, 1, 0, 1.8, 0)
+amount = 378
+process_material = SubResource("ParticleProcessMaterial_fnvy5")
+draw_pass_1 = SubResource("QuadMesh_ls18u")
+
+[node name="GPUParticles3D2" type="GPUParticles3D" parent="metarig"]
+transform = Transform3D(0.825488, 0.56442, -7.62816e-09, -0.56442, 0.825488, -2.46716e-08, -7.62816e-09, 2.46716e-08, 1, 0, 1.8, 0)
+amount = 378
+process_material = SubResource("ParticleProcessMaterial_htub1")
+draw_pass_1 = SubResource("QuadMesh_ca2si")

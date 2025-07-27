@@ -1,0 +1,183 @@
+[gd_scene load_steps=8 format=3 uid="uid://lhxu427enubt"]
+
+[ext_resource type="Texture2D" uid="uid://bquvac370pxn6" path="res://cock.svg" id="1_dsfgm"]
+[ext_resource type="Texture2D" uid="uid://bwovm74txl6i5" path="res://light.svg" id="2_yks11"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovb7r"]
+bg_color = Color(0.147672, 0.147672, 0.147672, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 0.257717, 0.55948, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i0rd7"]
+bg_color = Color(0.133196, 0.133196, 0.133196, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lcqfc"]
+bg_color = Color(0.237539, 0.237539, 0.237539, 1)
+
+[sub_resource type="Theme" id="Theme_i0rd7"]
+Button/styles/normal = SubResource("StyleBoxFlat_ovb7r")
+Panel/styles/panel = SubResource("StyleBoxFlat_i0rd7")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_lcqfc")
+
+[sub_resource type="FontVariation" id="FontVariation_lcqfc"]
+
+[node name="PanelContainer" type="PanelContainer"]
+offset_top = 592.0
+offset_right = 1280.0
+offset_bottom = 720.0
+theme = SubResource("Theme_i0rd7")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="UnitInfoBox" type="CenterContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/UnitInfoBox"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="UnitName" type="Label" parent="HBoxContainer/UnitInfoBox/VBoxContainer"]
+layout_mode = 2
+
+[node name="MovementUnitContainer" type="HBoxContainer" parent="HBoxContainer/UnitInfoBox/VBoxContainer"]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer"]
+custom_minimum_size = Vector2(72, 48)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("1_dsfgm")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="TULabel" type="Label" parent="HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="CenterContainer2" type="CenterContainer" parent="HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer2"]
+custom_minimum_size = Vector2(72, 48)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer2"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(16, 32)
+layout_mode = 2
+texture = ExtResource("2_yks11")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="ENULabel" type="Label" parent="HBoxContainer/UnitInfoBox/VBoxContainer/MovementUnitContainer/CenterContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+
+[node name="VSeparator2" type="VSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="ActionButtons" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TopButtons" type="HBoxContainer" parent="HBoxContainer/ActionButtons"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Button" type="Button" parent="HBoxContainer/ActionButtons/TopButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "KILL
+"
+
+[node name="Button2" type="Button" parent="HBoxContainer/ActionButtons/TopButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "KILL HARDER
+"
+
+[node name="Button3" type="Button" parent="HBoxContainer/ActionButtons/TopButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "KILL HARDEST"
+
+[node name="Button4" type="Button" parent="HBoxContainer/ActionButtons/TopButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "KILL HARDESTER"
+
+[node name="HSeparator2" type="HSeparator" parent="HBoxContainer/ActionButtons"]
+layout_mode = 2
+
+[node name="BottomButtons" type="HBoxContainer" parent="HBoxContainer/ActionButtons"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Button" type="Button" parent="HBoxContainer/ActionButtons/BottomButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "KILL HARDESTEST"
+
+[node name="Button2" type="Button" parent="HBoxContainer/ActionButtons/BottomButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "KILL HARDESTESTEST"
+
+[node name="Button3" type="Button" parent="HBoxContainer/ActionButtons/BottomButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SNOWGRAVE"
+
+[node name="Button4" type="Button" parent="HBoxContainer/ActionButtons/BottomButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SECX'"
+
+[node name="VSeparator3" type="VSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="EndTurn" type="Button" parent="HBoxContainer"]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/EndTurn"]
+custom_minimum_size = Vector2(256, 128)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 1
+theme_override_fonts/normal_font = SubResource("FontVariation_lcqfc")
+theme_override_font_sizes/normal_font_size = 41
+bbcode_enabled = true
+text = "[wave amp=50.0 freq=10.0 connected=1]END TURN[/wave]"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VSeparator4" type="VSeparator" parent="HBoxContainer"]
+layout_mode = 2

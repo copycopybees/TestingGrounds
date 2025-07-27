@@ -8,6 +8,7 @@ extends Node3D
 
 signal terrain_bounds(bounds : Rect2)
 signal unit_transmit(unit : Unit)
+signal kill_mode_update(state: bool)
 
 var mapgrid_floor: AStar3DChess
 var rng = RandomNumberGenerator.new()
@@ -29,12 +30,18 @@ var move_unit := false
 var movement_cancelled := false
 var present_teams : Array
 var current_team : int
+var cursor_mode := CURSOR_MODE.SELECT
+var accuracy_cone_mdt = MeshDataTool.new()
+var accuracy_cone_top = []
+var accuracy_cone_bottom = []
 
-const DIRECTIONS_RADIANS = [-2.35619449615479, -1.57079637050629, -0.78539818525314, 0.0, 0.78539818525314, 1.57079637050629, 2.35619449615479, 3.14159274101257]
+
+const DIRECTIONS_RADIANS = [-3*TAU/8, -TAU/4, -TAU/8, 0.0, TAU/8, TAU/4, 3*TAU/8, TAU/2]
 const TRAVEL_TIME = 0.5
 enum WALL_TYPES {PLUS, WALL, CORNER, T, HALFWALL}
 enum WALL_EXTENDS {NONE, UP, RIGHT, DOWN=4, LEFT=8, ALL=15}
 enum DIRECTIONS {NW, N, NE, W, E, SW, S, SE}
+enum CURSOR_MODE {SELECT, KILL}
 
 @onready var terrain_cells = $TerrainMap.get_used_cells()
 
@@ -43,6 +50,8 @@ enum DIRECTIONS {NW, N, NE, W, E, SW, S, SE}
 @onready var path_multimesh = $PathArrow.multimesh
 
 @onready var select_floor = $Pivot/SelectFloor
+
+@onready var accuracy_cone = get_node("AccuracyCone")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -65,18 +74,18 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if current_team == 0:
 		_move_unit(delta)
-		if move_unit == false and Input.is_action_just_pressed("turn_unit"):
+		if move_unit == false and Input.is_action_just_pressed("turn_unit") and cursor_mode == CURSOR_MODE.SELECT:
 			var unit_pos = Vector2(units[selected_unit_index].position.x,units[selected_unit_index].position.z) * 1.5
 			var highlight_pos = Vector2($HighlightCursor.position.x,$HighlightCursor.position.z) - Vector2(0.75,0.75)
 			var angle = unit_pos.angle_to_point(highlight_pos)
 			var closest_angle = 0.0
 			for i in DIRECTIONS_RADIANS.size():
-				if angle <= -2.74889361858:
-					closest_angle = 3.14159274101257
+				if angle <= -(PI + (3*TAU/8)) / 2:
+					closest_angle = PI
 					break
-				if abs(angle - DIRECTIONS_RADIANS[i]) <= 0.4799655:
+				if abs(angle - DIRECTIONS_RADIANS[i]) <= TAU/16:
 					closest_angle = DIRECTIONS_RADIANS[i]
-			_turn_unit(delta,closest_angle)
+			turn_unit(delta,closest_angle)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("clear_path"):
@@ -105,23 +114,28 @@ func _generate_navgrid():
 					mapgrid_floor.connect_points(i,cell_id)
 
 func _on_cell_selected(cell: Vector3i) -> void:
-	if move_unit:
-		return
-	unit_selected = false
-	for i in units.size():
-		var unit = units[i]
-		if unit.position != cell:
-			continue
-		if unit.unit_team != unit.UNIT_TEAM.PLAYER:
-			continue
-		unit_selected = true
-		if selected_unit_index >= 0:
-			deselect_unit(selected_unit_index)
-		select_unit(i)
-		break
-	if not unit_selected and selected_unit_index >= 0:
-		_set_unit_destination(selected_unit_index, cell)
-		last_clicked_cell = cell
+	match cursor_mode:
+		CURSOR_MODE.SELECT:
+			if move_unit:
+				return
+			unit_selected = false
+			for i in units.size():
+				var unit = units[i]
+				if unit.position != cell:
+					continue
+				if unit.unit_team != unit.UNIT_TEAM.PLAYER:
+					continue
+				unit_selected = true
+				if selected_unit_index >= 0:
+					deselect_unit(selected_unit_index)
+				select_unit(i)
+				break
+			if not unit_selected and selected_unit_index >= 0:
+				_set_unit_destination(selected_unit_index, cell)
+				last_clicked_cell = cell
+		CURSOR_MODE.KILL:
+			if selected_unit_index != -1:
+				generate_accuracy_cone(units[selected_unit_index])
 
 func _initialise_units():
 	var i = 0
@@ -194,6 +208,8 @@ func _move_unit(delta):
 			return
 		var start = unit_path[path_index]
 		var end = unit_path[path_index+1]
+		if travel_timer <= 0:
+			turn_unit(delta, Vector2(start.x,start.z).angle_to_point(Vector2(end.x,end.z)))
 		travel_timer += delta
 		if Input.is_action_just_pressed('cancel_movement'):
 			movement_cancelled = true
@@ -224,7 +240,7 @@ func _move_unit(delta):
 					$MCIContainer.get_children()[i].queue_free()
 				last_clicked_cell = Vector3i(100,100,100)
 
-func _turn_unit(delta, angle):
+func turn_unit(delta, angle):
 	units[selected_unit_index].graphics_node.transform.basis = transform.basis.rotated(Vector3.UP, -angle)
 
 func get_wall_extends(cell):
@@ -342,3 +358,17 @@ func _gather_present_teams():
 		var unit_team = unit.unit_team
 		if not present_teams.has(unit_team):
 			present_teams.append(unit_team)
+
+func generate_accuracy_cone(unit):
+	$RayCast3D.position = unit.position * 1.5 + Vector3(0.75,1.5,0.75)
+	$RayCast3D.target_position = $SelectorCursor.position - $RayCast3D.position + Vector3(0,1.5,0)
+	var angle = Vector2(unit.graphics_node.position.x,unit.graphics_node.position.z).angle_to_point(Vector2($SelectorCursor.position.x,$SelectorCursor.position.z))
+	$AccuracyCone.update_cone(unit.graphics_node.position + Vector3(0.75,1.5,0.75), -angle, 0.1, 0.1)
+
+func _on_kill_pressed() -> void:
+	cursor_mode = CURSOR_MODE.KILL
+	kill_mode_update.emit(true)
+
+func _on_move_pressed() -> void:
+	cursor_mode = CURSOR_MODE.SELECT
+	kill_mode_update.emit(false)
