@@ -53,6 +53,7 @@ enum CURSOR_MODE {SELECT, KILL}
 
 @onready var accuracy_cone = get_node("AccuracyCone")
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	_generate_navgrid()

@@ -36,11 +36,11 @@ float random (vec2 st) {
 void fragment() {
 	vec2 base_uv = UV;
 	float threshold = 0.01;
-	float lines = 16.0;
-	float wibbles_count = 16.0;
+	float lines = 4.0;
+	float wibbles_count = 8.0;
 	
 	float wibbly = (sin((UV.x + TIME * 0.01)*TAU*wibbles_count) + sin((UV.x + TIME * 0.037)*TAU*wibbles_count)) * 0.01;
-	float timescale = 0.05;
+	float timescale = 0.25;
 
 	vec4 albedo_tex = texture(texture_albedo, base_uv);
 	ALBEDO = albedo.rgb * albedo_tex.rgb;
@@ -53,5 +53,5 @@ void fragment() {
 	vec4 roughness_texture_channel = vec4(1.0, 0.0, 0.0, 0.0);
 	float roughness_tex = dot(texture(texture_roughness, base_uv), roughness_texture_channel);
 	ROUGHNESS = roughness_tex * roughness;
-	ALPHA *= albedo.a * albedo_tex.a + 1.0 - albedo_tex.a * step(threshold, mod((wibbly + UV.y*lines-(TIME*timescale)+random(SCREEN_UV-TIME)*0.01),1.0)) * step(0.00, random(SCREEN_UV+TIME*6.23));
+	ALPHA *= albedo.a * albedo_tex.a + 1.0 - albedo_tex.a * step(threshold, mod((wibbly + UV.y*lines-(TIME*timescale)+random(SCREEN_UV-TIME)*0.01),1.0)) * step(0.001, random(SCREEN_UV+TIME*6.23));
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=4 uid="uid://sfr23dm0gcdx"]
+[gd_scene load_steps=11 format=4 uid="uid://sfr23dm0gcdx"]
 
 [ext_resource type="Script" uid="uid://daewkc50n511x" path="res://Scripts/man_graphic.gd" id="1_fnvy5"]
 [ext_resource type="Material" uid="uid://cfhy4i35whkjj" path="res://Resources/Materials/outline.tres" id="2_oh38m"]
@@ -55,9 +55,14 @@ float random (vec2 st) {
         43758.5453123);
 }
 
-void fragment() {
-	vec2 base_uv = UV;
+vec2 mandelbrot (vec2 c, vec2 z) {
+	return c + vec2(z.x*z.x - z.y*z.y, 2.0*z.x*z.y);
+}
 
+void fragment() {
+	vec2 base_uv = sin(10.0*UV);
+
+	/*
 	vec4 albedo_tex = texture(texture_albedo, base_uv);
 	vec3 albedo_hsv = rgb2hsv(albedo.rgb);
 	albedo_hsv.x = random(vec2(TIME) + SCREEN_UV);
@@ -74,7 +79,25 @@ void fragment() {
 	float roughness_tex = dot(texture(texture_roughness, base_uv), roughness_texture_channel);
 	ROUGHNESS = roughness_tex * roughness;
 	ALPHA *= albedo.a * albedo_tex.a;
+	*/
+	int limit = 20;
+	float time = tan(TIME);
+	vec2 z = base_uv;
+	int i = 0;
+	for (; i < limit; ++i) {
+		z = mandelbrot(vec2(sin(time), cos(sqrt(2.0)*time)), z);
+		
+		if (z.x*z.x + z.y*z.y > 4.0) {
+			break;
+		}
+	}
 	
+	ALBEDO = texture(texture_albedo, vec2(float(i)/float(limit), 0.0)).rgb;
+	
+	//ALBEDO = vec3(float(i)/float(limit));
+	
+	
+	//vec2 arst = vec2(UV.x*UV.x - UV.y*UV.y, 2.0*UV.x*UV.y);
 	
 }
 
@@ -82,10 +105,18 @@ void fragment() {
 
 "
 
+[sub_resource type="Gradient" id="Gradient_fnvy5"]
+offsets = PackedFloat32Array(0.0510204, 0.107143, 0.188776, 0.260204, 0.341837, 0.436224, 0.507653, 0.55102, 0.579082, 0.663265, 0.757653, 0.795918, 0.905612)
+colors = PackedColorArray(0.180392, 0, 0.215686, 1, 0.180392, 0, 0.505882, 1, 0.50121, 0.000194015, 0.506807, 1, 0.368627, 0.254902, 0.627451, 1, 0.215213, 0.547981, 0.106493, 1, 0.215686, 0.545098, 0.678431, 1, 0.619608, 0.541176, 0.803922, 1, 0.215686, 0.541176, 0.878431, 1, 0.313726, 0.309804, 0.784314, 1, 0.611765, 0.470588, 0.509804, 1, 0.615578, 0.409871, 0.197282, 1, 0.526356, 0.370807, 0.196971, 1, 0.270588, 0.258824, 0.196078, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_oh38m"]
+gradient = SubResource("Gradient_fnvy5")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_oh38m"]
 render_priority = 0
 shader = SubResource("Shader_fnvy5")
 shader_parameter/albedo = Color(1, 0, 0, 1)
+shader_parameter/texture_albedo = SubResource("GradientTexture1D_oh38m")
 shader_parameter/albedo_texture_size = Vector2i(0, 0)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 0.0
